@@ -14,17 +14,20 @@ public class StepsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
-
-        Bundle data =getIntent().getExtras();
-        StepsFragment stepsFragment =new StepsFragment();
-        stepsFragment.setArguments(data);
-        FragmentManager manager = this.getSupportFragmentManager();
-        FragmentTransaction transaction =manager.beginTransaction();
-        String tag ="steps_fragment";
-        transaction.add(R.id.fl_steps,stepsFragment, tag);
-        transaction.addToBackStack(tag);
-        transaction.commit();
-
+        String tag = "steps_fragment";
+        if (savedInstanceState ==null) {
+            Bundle data = getIntent().getExtras();
+            StepsFragment stepsFragment = new StepsFragment();
+            stepsFragment.setArguments(data);
+            FragmentManager manager = this.getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.add(R.id.fl_steps, stepsFragment, tag);
+            transaction.addToBackStack(tag);
+            transaction.commit();
+        }
+        else {
+            getSupportFragmentManager().findFragmentByTag(tag);
+        }
     }
 
     @Override

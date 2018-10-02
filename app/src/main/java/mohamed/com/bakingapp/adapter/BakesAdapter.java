@@ -64,7 +64,7 @@ public class BakesAdapter extends RecyclerView.Adapter<BakesAdapter.BakesViewHol
 
         @Override
         public void onClick(View v) {
-            bakeItemListener.onBakeItemClicked(bakes.get(getAdapterPosition()));
+            bakeItemListener.onBakeItemClicked(bakes.get(getAdapterPosition()),getAdapterPosition());
         }
     }
 }

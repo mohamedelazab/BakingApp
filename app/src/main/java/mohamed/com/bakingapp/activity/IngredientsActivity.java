@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +28,9 @@ public class IngredientsActivity extends AppCompatActivity {
     @BindView(R.id.tv_toolbar_title)
     TextView tvToolbarTitle;
 
+    @BindView(R.id.btn_back)
+    ImageButton btnBack;
+
     @BindView(R.id.rv_ingredients)
     RecyclerView rvIngredients;
 
@@ -39,9 +44,9 @@ public class IngredientsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
-        tvToolbarTitle.setText("Ingredients");
         Bundle bundle =getIntent().getBundleExtra(Constants.INGREDIENTS_BUNDLE);
         if (bundle !=null){
+            tvToolbarTitle.setText(getIntent().getExtras().getString(Constants.BAKE_NAME));
             List<IngredientResponse> ingredients = (ArrayList<IngredientResponse>) bundle.getSerializable(Constants.INGREDIENTS);
             Log.e("INGREDIENTS", ingredients.size()+"");
             layoutManager =new LinearLayoutManager(IngredientsActivity.this);
@@ -49,5 +54,12 @@ public class IngredientsActivity extends AppCompatActivity {
             rvIngredients.setLayoutManager(layoutManager);
             rvIngredients.setAdapter(adapter);
         }
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 }

@@ -18,7 +18,7 @@ import mohamed.com.bakingapp.utils.Constants;
 
 public class DetailsActivity extends AppCompatActivity implements StepItemListener{
 
-    boolean isTwoPane;
+    public static boolean isTwoPane;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

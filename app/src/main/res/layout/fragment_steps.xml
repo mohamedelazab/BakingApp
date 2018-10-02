@@ -20,38 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_step_short_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/xml_curved_border"
-        android:gravity="center"
-        android:minHeight="40dp"
-        android:padding="8dp"
-        android:text="No Description.!"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraint_video" />
-
-    <TextView
-        android:id="@+id/tv_step_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="No short Description"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_step_short_desc" />
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraint_video"
         android:layout_width="match_parent"
@@ -101,6 +69,49 @@
 
     </android.support.constraint.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/tv_step_short_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/xml_curved_border"
+        android:gravity="center"
+        android:minHeight="40dp"
+        android:padding="8dp"
+        android:text="No Description.!"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraint_video" />
+
+    <TextView
+        android:id="@+id/tv_step_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="No short Description"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_step_short_desc" />
+
+    <ImageView
+        android:id="@+id/thumbnail_step"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_step_desc" />
 
     <Button
         android:id="@+id/btn_next"
@@ -112,7 +123,7 @@
         android:text="Next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_step_desc" />
+        app:layout_constraintTop_toBottomOf="@+id/thumbnail_step" />
 
     <Button
         android:id="@+id/btn_previous"
@@ -124,7 +135,7 @@
         android:text="Previous"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_step_desc" />
+        app:layout_constraintTop_toBottomOf="@+id/thumbnail_step" />
 
 </android.support.constraint.ConstraintLayout>
 </ScrollView>

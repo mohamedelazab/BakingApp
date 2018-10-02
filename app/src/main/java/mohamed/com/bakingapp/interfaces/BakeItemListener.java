@@ -4,5 +4,5 @@ import mohamed.com.bakingapp.model.BakedResponse;
 
 public interface BakeItemListener {
 
-    public void onBakeItemClicked(BakedResponse bakedResponse);
+    public void onBakeItemClicked(BakedResponse bakedResponse, int position);
 }

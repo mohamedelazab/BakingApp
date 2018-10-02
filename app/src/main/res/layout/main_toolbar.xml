@@ -6,19 +6,38 @@
     android:id="@+id/my_toolbar"
     android:background="@color/colorPrimary">
 
-    <!--<ImageButton-->
-        <!--android:id="@+id/btn_back"-->
-        <!--android:layout_width="24dp"-->
-        <!--android:layout_height="24dp"-->
-        <!--android:background="@drawable/arrow_back"/>-->
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:minHeight="?android:attr/actionBarSize">
 
-    <TextView
-        android:id="@+id/tv_toolbar_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Baking App"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:textColor="@color/colorWhite"/>
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:background="@drawable/arrow_back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Baking App"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_back"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.Toolbar>

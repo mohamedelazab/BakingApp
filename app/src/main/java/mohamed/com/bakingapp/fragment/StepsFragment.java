@@ -2,19 +2,25 @@ package mohamed.com.bakingapp.fragment;
 
 
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.C;
@@ -31,6 +37,7 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +47,8 @@ import butterknife.ButterKnife;
 import mohamed.com.bakingapp.R;
 import mohamed.com.bakingapp.model.StepResponse;
 import mohamed.com.bakingapp.utils.Constants;
+import mohamed.com.bakingapp.utils.Helper;
+import mohamed.com.bakingapp.utils.Preferences;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,8 +61,14 @@ public class StepsFragment extends Fragment {
     @BindView(R.id.tv_toolbar_title)
     TextView tvToolbarTitle;
 
+    @BindView(R.id.btn_back)
+    ImageButton btnBack;
+
     @BindView(R.id.exo_player_view)
     SimpleExoPlayerView exoPlayerView;
+
+    @BindView(R.id.thumbnail_step)
+    ImageView thumbnailStep;
 
     @BindView(R.id.img_place_holder)
     TextView tvPlaceHolder;
@@ -75,6 +90,7 @@ public class StepsFragment extends Fragment {
     ArrayList<StepResponse> steps;
     int currentStepIndex = 0;
     Long videoPositionState =C.TIME_UNSET;
+    boolean playerState =true;
 
     public StepsFragment() {
         // Required empty public constructor
@@ -102,10 +118,17 @@ public class StepsFragment extends Fragment {
                 //StepResponse currentStep = (StepResponse) bundle.getSerializable(Constants.STEP_BUNDLE);
                 currentStepIndex = bundle.getInt(Constants.STEP_INDEX);
                 steps.addAll((Collection<? extends StepResponse>) bundle.getSerializable(Constants.ALL_STEPS_BUNDLE));
-                if (savedInstanceState !=null) {
-                    currentStepIndex = savedInstanceState.getInt("CURRENT_STEP");
-                    videoPositionState =savedInstanceState.getLong("CURRENT_POSITION");
-                }
+
+                    if (savedInstanceState !=null) {
+                        videoPositionState = savedInstanceState.getLong("CURRENT_POSITION", C.TIME_UNSET);
+                        Log.e("RESTORED_DATA", "video position: " + videoPositionState + "");
+                        steps = (ArrayList<StepResponse>) savedInstanceState.getSerializable("STEPS");
+                        Log.e("RESTORED_DATA", "Steps size: " + steps.size() + "");
+                        currentStepIndex = savedInstanceState.getInt("CURRENT_STEP");
+                        Log.e("RESTORED_DATA", "Current Step: " + currentStepIndex + "");
+                        playerState =savedInstanceState.getBoolean("playerState");
+                    }
+
                 showVideo(steps.get(currentStepIndex));
                 Log.e("SHOW_CURRENT", "CREATED OR ROTATED.! "+currentStepIndex);
             }
@@ -117,6 +140,8 @@ public class StepsFragment extends Fragment {
                 finishVideoService();
                 currentStepIndex++;
                 if (currentStepIndex <= steps.size()-1) {
+                    playerState =true;
+                    videoPositionState =C.TIME_UNSET;
                     showVideo(steps.get(currentStepIndex));
                 }
                 if (currentStepIndex >=steps.size()){
@@ -131,12 +156,21 @@ public class StepsFragment extends Fragment {
                 finishVideoService();
                 currentStepIndex--;
                 if (currentStepIndex >= 0) {
+                    playerState =true;
+                    videoPositionState =C.TIME_UNSET;
                     showVideo(steps.get(currentStepIndex));
                 }
 
                 if (currentStepIndex < 0){
                     currentStepIndex = 0;
                 }
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
             }
         });
 
@@ -156,7 +190,7 @@ public class StepsFragment extends Fragment {
             exoPlayerView.setLayoutParams(params);
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             //unhide your objects here.
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) exoPlayerView.getLayoutParams();
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) exoPlayerView.getLayoutParams();
             params.width=params.MATCH_PARENT;
             params.height=600;
             exoPlayerView.setLayoutParams(params);
@@ -166,27 +200,16 @@ public class StepsFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        //TODO: save th state of video, list of steps, the position of step, and the index of buttons..!
+        playerState = simpleExoPlayer.getPlayWhenReady();
+        outState.putBoolean("playerState", playerState);
         outState.putLong("CURRENT_POSITION", simpleExoPlayer.getCurrentPosition());
         outState.putInt("CURRENT_STEP", currentStepIndex);
         outState.putSerializable("STEPS", steps);
     }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        //TODO: RESTORE ALL DATA AND STATES..
-        if (savedInstanceState !=null) {
-            videoPositionState = savedInstanceState.getLong("CURRENT_POSITION", C.TIME_UNSET);
-            Log.e("RESTORED_DATA", "video position: " + videoPositionState + "");
-            steps = (ArrayList<StepResponse>) savedInstanceState.getSerializable("STEPS");
-            Log.e("RESTORED_DATA", "Steps size: " + steps.size() + "");
-            currentStepIndex = savedInstanceState.getInt("CURRENT_STEP");
-            Log.e("RESTORED_DATA", "Current Step: " + currentStepIndex + "");
-        }
-    }
 
-    private void showVideo(StepResponse currentStep) {
+
+    private void showVideo(final StepResponse currentStep) {
         exoPlayerView.setVisibility(View.VISIBLE);
         tvPlaceHolder.setVisibility(View.GONE);
         try {
@@ -197,12 +220,31 @@ public class StepsFragment extends Fragment {
             if (!currentStep.getVideoURL().equals("")) {
                 videoUri = Uri.parse(currentStep.getVideoURL());
                 Log.e("VIDEO", currentStep.getVideoURL());
-            } else if (!currentStep.getThumbnailURL().equals("")) {
-                videoUri = Uri.parse(currentStep.getThumbnailURL());
-                Log.e("Thumbnil", currentStep.getThumbnailURL());
-            } else {
+            }
+            else {
                 exoPlayerView.setVisibility(View.GONE);
                 tvPlaceHolder.setVisibility(View.VISIBLE);
+            }
+
+            //if thumbnail img exist
+            if (!currentStep.getThumbnailURL().equals("") &&
+                    Helper.isImageFile(currentStep.getThumbnailURL())) {
+                Picasso.get().load(currentStep.getThumbnailURL()).into(thumbnailStep);
+            }
+            //extract thumbnail img if video exist
+            else if (!currentStep.getThumbnailURL().equals("") &&
+                    Helper.isVideoFile(currentStep.getThumbnailURL())){
+                //TODO:
+                String strImg =new Preferences(getContext()).getThumbnail();
+                if( !strImg.equals("") ){
+                    byte[] b = Base64.decode(strImg, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+                    thumbnailStep.setVisibility(View.VISIBLE);
+                    thumbnailStep.setImageBitmap(bitmap);
+                }
+            }
+            else{
+                thumbnailStep.setVisibility(View.GONE);
             }
 
             if (videoUri != null) {
@@ -222,8 +264,7 @@ public class StepsFragment extends Fragment {
                 exoPlayerView.setPlayer(simpleExoPlayer);
                 if (videoPositionState != C.TIME_UNSET) simpleExoPlayer.seekTo(videoPositionState);
                 simpleExoPlayer.prepare(videoSource);
-                simpleExoPlayer.setPlayWhenReady(true);
-
+                simpleExoPlayer.setPlayWhenReady(playerState);
             } else {
                 //Toast.makeText(getContext(), "Null Uri.!", Toast.LENGTH_SHORT).show();
             }
@@ -234,6 +275,8 @@ public class StepsFragment extends Fragment {
 
         } catch (Exception e) {
             Log.e("EXOPLAYER_EXCEPTION", e.getMessage());
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
 

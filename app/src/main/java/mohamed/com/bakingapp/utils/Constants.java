@@ -9,4 +9,5 @@ public class Constants {
     public static final String STEP_BUNDLE = "step_bundle";
     public static final String ALL_STEPS_BUNDLE = "all_steps_bundle";
     public static final String STEP_INDEX = "step_index";
+    public static final String BAKE_NAME = "bake_name";
 }

@@ -1,6 +1,8 @@
 package mohamed.com.bakingapp.fragment;
 
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -32,6 +34,7 @@ import mohamed.com.bakingapp.model.BakedResponse;
 import mohamed.com.bakingapp.retrofit.ApiClient;
 import mohamed.com.bakingapp.retrofit.ApiInterface;
 import mohamed.com.bakingapp.utils.Constants;
+import mohamed.com.bakingapp.widget.IngredientsWidget;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -71,6 +74,7 @@ public class MainFragment extends Fragment implements BakeItemListener {
         ButterKnife.bind(this, rootView);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
+        rootView.findViewById(R.id.btn_back).setVisibility(View.GONE);
         bakes =new ArrayList<>();
         loadingDialog =new LoadingDialog(getContext());
         tvToolbarTitle.setText("Baking App");
@@ -102,7 +106,7 @@ public class MainFragment extends Fragment implements BakeItemListener {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
+        //super.onSaveInstanceState(outState);
         int x =layoutManager.findLastCompletelyVisibleItemPosition();
 
         if (x ==-1){
@@ -149,13 +153,17 @@ public class MainFragment extends Fragment implements BakeItemListener {
     }
 
     @Override
-    public void onBakeItemClicked(BakedResponse bakedResponse) {
+    public void onBakeItemClicked(BakedResponse bakedResponse, int position) {
         if (bakedResponse != null) {
             Toast.makeText(getContext(), "HH", Toast.LENGTH_SHORT).show();
             Intent intent =new Intent(getContext(), DetailsActivity.class);
             intent.putExtra(Constants.BAKE_OBJ_INTENT,bakedResponse);
             Log.e("STEPS",bakedResponse.getStepResponses().get(0).getShortDescription());
             startActivity(intent);
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getContext());
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(getContext(), IngredientsWidget.class));
+            IngredientsWidget.updateFromActivity(getContext(), appWidgetManager, appWidgetIds, position, (ArrayList<BakedResponse>) bakes);
         }
     }
+
 }
