@@ -2,6 +2,9 @@ package mohamed.com.bakingapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -14,11 +17,13 @@ import mohamed.com.bakingapp.fragment.DetailsFragment;
 import mohamed.com.bakingapp.fragment.StepsFragment;
 import mohamed.com.bakingapp.interfaces.StepItemListener;
 import mohamed.com.bakingapp.model.StepResponse;
+import mohamed.com.bakingapp.utils.BakingIdlingResource;
 import mohamed.com.bakingapp.utils.Constants;
 
 public class DetailsActivity extends AppCompatActivity implements StepItemListener{
 
     public static boolean isTwoPane;
+    IdlingResource idlingResource;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,5 +99,14 @@ public class DetailsActivity extends AppCompatActivity implements StepItemListen
             intent.putExtras(data);
             startActivity(intent);
         }
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (idlingResource == null) {
+            idlingResource = new BakingIdlingResource();
+        }
+        return idlingResource;
     }
 }
